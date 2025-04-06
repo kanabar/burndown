@@ -32,7 +32,7 @@ export const useGameState = create<GameState>((set, get) => ({
   actualBurndown: [12],
   // Initialize burnup chart data
   scopeData: [12, 12, 12, 12],         // Total scope remains constant at 12 points
-  todoData: [12, 12, 12, 12],          // TODO starts at 12 and will decrease
+  todoData: [0, 0, 0, 0],              // TODO starts at 0 for burnup (to be calculated inversely)
   doneData: [0, 0, 0, 0],              // DONE starts at 0 and will increase
   isRolling: false,
   isGameCompleted: false,
@@ -72,9 +72,11 @@ export const useGameState = create<GameState>((set, get) => ({
     const newTodoData = [...todoData];
     const newDoneData = [...doneData];
     
-    // Update TODO and DONE for the current sprint
-    newTodoData[throwNumber - 1] = newRemainingWork;
+    // Update DONE for the current sprint (increasing from 0 toward 12)
     newDoneData[throwNumber - 1] = 12 - newRemainingWork; // DONE = total scope - remaining work
+    
+    // For burnup chart, TODO is the difference between scope and done
+    // We're keeping it at 0 and letting the chart visually show the difference
     
     // Check if game is completed (all 4 throws or 0 remaining work)
     const isGameCompleted = throwNumber >= 4 || newRemainingWork === 0;
@@ -100,7 +102,7 @@ export const useGameState = create<GameState>((set, get) => ({
       actualBurndown: [12],
       // Reset burnup chart data
       scopeData: [12, 12, 12, 12],
-      todoData: [12, 12, 12, 12],
+      todoData: [0, 0, 0, 0],
       doneData: [0, 0, 0, 0],
       isRolling: false,
       isGameCompleted: false,

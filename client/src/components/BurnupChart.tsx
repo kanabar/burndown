@@ -9,13 +9,22 @@ interface BurnupChartProps {
 
 const BurnupChart: React.FC<BurnupChartProps> = ({ scopeData, todoData, doneData }) => {
   // Transform data for Recharts
+  // For burnup chart, we'll create data points that show progress upward towards completion
   const chartData = scopeData.map((scope, index) => {
     return {
       name: `Sprint ${index + 1}`,
       scope,
-      todo: todoData[index] !== undefined ? todoData[index] : null,
+      todo: 0, // We'll visualize TODO as the gap between scope and done
       done: doneData[index] !== undefined ? doneData[index] : null
     };
+  });
+  
+  // Add a "Start" point at the beginning
+  chartData.unshift({
+    name: 'Start',
+    scope: 12,
+    todo: 0,
+    done: 0
   });
 
   return (
@@ -54,15 +63,6 @@ const BurnupChart: React.FC<BurnupChartProps> = ({ scopeData, todoData, doneData
           type="monotone"
           dataKey="scope"
           stroke="#3b82f6" // Blue color (matching the blue in the image)
-          strokeWidth={2}
-          activeDot={{ r: 8 }}
-          dot={{ strokeWidth: 2 }}
-        />
-        <Line
-          name="TODO"
-          type="monotone"
-          dataKey="todo"
-          stroke="#ef4444" // Red color (matching the red in the image)
           strokeWidth={2}
           activeDot={{ r: 8 }}
           dot={{ strokeWidth: 2 }}

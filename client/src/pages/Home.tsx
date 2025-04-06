@@ -115,8 +115,8 @@ const Home: React.FC = () => {
               ) : (
                 <ul className="list-disc pl-5 space-y-2 text-neutral-400">
                   <li><span className="font-medium text-blue-500">Blue line</span>: Total scope (constant at 12)</li>
-                  <li><span className="font-medium text-red-500">Red line</span>: TODO work (decreases over time)</li>
                   <li><span className="font-medium text-green-500">Green line</span>: DONE work (increases over time)</li>
+                  <li>Gap between blue and green: Remaining work</li>
                   <li>Y-axis: Story points (0 to 12)</li>
                   <li>X-axis: Four sprints (dice throws)</li>
                 </ul>
@@ -143,7 +143,7 @@ const Home: React.FC = () => {
               <p className="text-neutral-400">
                 {activeTab === "burndown"
                   ? "From the burndown chart, you can see how your progress compares to the ideal path. This helps teams identify if they're on track to complete work within the planned time frame."
-                  : "The burnup chart makes it easier to see how much work is completed (green) vs remaining (red) and accommodates scope changes (blue) which are common in real projects."}
+                  : "The burnup chart makes it easier to see how much work is completed (green) versus the total scope (blue). The gap between lines represents remaining work and it can also visualize scope changes."}
               </p>
             </div>
           </div>
