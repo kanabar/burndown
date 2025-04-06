@@ -147,15 +147,23 @@ const Home: React.FC = () => {
           {/* Results summary */}
           {isGameCompleted && (
             <div className="bg-neutral-100 p-4 rounded-md">
-              <h3 className="font-medium text-primary mb-2">Results Summary</h3>
+              <h3 className="font-medium text-primary mb-2">
+                Results Summary
+                {remainingWork === 0 && throwNumber <= 4 && " (Early Completion!)"}
+              </h3>
               <div className="grid grid-cols-4 gap-2 mb-3">
                 {throwResults.map((result, index) => (
-                  <div key={index} className="p-3 bg-white rounded-md text-center shadow-sm">
+                  <div key={index} className={`p-3 bg-white rounded-md text-center shadow-sm ${result === null ? 'opacity-50' : ''}`}>
                     <p className="text-xs text-neutral-300">Throw {index + 1}</p>
                     <p className="text-xl font-bold text-primary">{result !== null ? result : '-'}</p>
                   </div>
                 ))}
               </div>
+              {remainingWork === 0 && (
+                <div className="text-center p-3 mb-3 rounded-md font-medium bg-green-100 text-green-700">
+                  You completed all the work in just {throwNumber - 1} throws!
+                </div>
+              )}
               <div className={`text-center p-3 rounded-md font-medium ${finalMessage.bgColor}`}>
                 {finalMessage.message}
               </div>

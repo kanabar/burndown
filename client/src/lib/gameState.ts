@@ -55,8 +55,8 @@ export const useGameState = create<GameState>((set, get) => ({
     // Update actual burndown data
     const newActualBurndown = [...actualBurndown, newRemainingWork];
     
-    // Check if game is completed
-    const isGameCompleted = throwNumber >= 4;
+    // Check if game is completed (all 4 throws or 0 remaining work)
+    const isGameCompleted = throwNumber >= 4 || newRemainingWork === 0;
     
     set({
       throwResults: newThrowResults,

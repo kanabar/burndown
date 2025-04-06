@@ -6,6 +6,7 @@ const DiceRoller: React.FC = () => {
   const { 
     throwNumber, 
     throwResults, 
+    remainingWork,
     isRolling, 
     isGameCompleted,
     rollDice 
@@ -46,17 +47,28 @@ const DiceRoller: React.FC = () => {
     };
   }, []);
   
+  // Generate status message based on game state
+  const getStatusMessage = () => {
+    if (isGameCompleted) {
+      if (remainingWork === 0) {
+        return "All work completed!";
+      } else if (throwNumber > 4) {
+        return "All throws completed";
+      }
+    }
+    return "Click the button to roll the dice";
+  };
+  
   return (
     <div className="bg-neutral-100 p-4 rounded-md mb-6">
       <div className="flex flex-col md:flex-row items-center justify-between">
         <div className="mb-4 md:mb-0">
           <h3 className="text-lg font-medium text-neutral-400 mb-2">
             Throw #{throwNumber > 4 ? 4 : throwNumber} of 4
+            {remainingWork === 0 && throwNumber <= 4 && " (Early completion!)"}
           </h3>
           <p className="text-neutral-300">
-            {isGameCompleted 
-              ? "All throws completed" 
-              : "Click the button to roll the dice"}
+            {getStatusMessage()}
           </p>
         </div>
         
