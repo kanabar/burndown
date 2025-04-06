@@ -1,18 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import BurndownChart from '@/components/BurndownChart';
+import BurnupChart from '@/components/BurnupChart';
 import DiceRoller from '@/components/DiceRoller';
 import Dice from '@/components/Dice';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useGameState } from '@/lib/gameState';
 
 const Home: React.FC = () => {
+  const [activeTab, setActiveTab] = useState("burndown");
+  
   const { 
     throwNumber,
     remainingWork,
     throwResults,
     idealBurndown,
     actualBurndown,
+    scopeData,
+    todoData,
+    doneData,
     isGameCompleted,
     diceTheme,
     restartGame
@@ -79,8 +86,8 @@ const Home: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8 max-w-screen-xl">
       <header className="mb-8 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold text-neutral-400 mb-2">Burndown Chart Tutorial</h1>
-        <p className="text-neutral-300 text-lg md:text-xl">Learn burndown charts using dice rolls</p>
+        <h1 className="text-3xl md:text-4xl font-bold text-neutral-400 mb-2">Agile Charts Tutorial</h1>
+        <p className="text-neutral-300 text-lg md:text-xl">Learn burndown and burnup charts using dice rolls</p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -91,44 +98,86 @@ const Home: React.FC = () => {
             How It Works
           </h2>
           <div className="space-y-4">
-            <p className="text-neutral-400">A burndown chart shows how work decreases over time toward completion.</p>
+            <p className="text-neutral-400">
+              {activeTab === "burndown" 
+                ? "A burndown chart shows how work decreases over time toward completion."
+                : "A burnup chart shows how completed work and scope change over time."}
+            </p>
             <div className="bg-neutral-100 p-4 rounded-md">
               <h3 className="font-medium text-primary mb-2">The Chart Elements:</h3>
-              <ul className="list-disc pl-5 space-y-2 text-neutral-400">
-                <li><span className="font-medium text-blue-500">Blue line</span>: Ideal progress (from 12 to 0)</li>
-                <li><span className="font-medium text-red-500">Red line</span>: Actual progress (based on your dice throws)</li>
-                <li>Y-axis: Remaining work (12 to 0)</li>
-                <li>X-axis: Four time periods (dice throws)</li>
-              </ul>
+              {activeTab === "burndown" ? (
+                <ul className="list-disc pl-5 space-y-2 text-neutral-400">
+                  <li><span className="font-medium text-blue-500">Blue line</span>: Ideal progress (from 12 to 0)</li>
+                  <li><span className="font-medium text-red-500">Red line</span>: Actual progress (based on your dice throws)</li>
+                  <li>Y-axis: Remaining work (12 to 0)</li>
+                  <li>X-axis: Four time periods (dice throws)</li>
+                </ul>
+              ) : (
+                <ul className="list-disc pl-5 space-y-2 text-neutral-400">
+                  <li><span className="font-medium text-blue-500">Blue line</span>: Total scope (constant at 12)</li>
+                  <li><span className="font-medium text-red-500">Red line</span>: TODO work (decreases over time)</li>
+                  <li><span className="font-medium text-green-500">Green line</span>: DONE work (increases over time)</li>
+                  <li>Y-axis: Story points (0 to 12)</li>
+                  <li>X-axis: Four sprints (dice throws)</li>
+                </ul>
+              )}
             </div>
             <div className="bg-neutral-100 p-4 rounded-md">
               <h3 className="font-medium text-primary mb-2">Reading The Chart:</h3>
-              <ul className="list-disc pl-5 space-y-2 text-neutral-400">
-                <li>Red line above blue → Behind schedule</li>
-                <li>Red line below blue → Ahead of schedule</li>
-                <li>Red line matching blue → On schedule</li>
-              </ul>
+              {activeTab === "burndown" ? (
+                <ul className="list-disc pl-5 space-y-2 text-neutral-400">
+                  <li>Red line above blue → Behind schedule</li>
+                  <li>Red line below blue → Ahead of schedule</li>
+                  <li>Red line matching blue → On schedule</li>
+                </ul>
+              ) : (
+                <ul className="list-disc pl-5 space-y-2 text-neutral-400">
+                  <li>Increasing green line → Work being completed</li>
+                  <li>Gap between blue and green → Remaining work</li>
+                  <li>Green meeting blue → All work completed</li>
+                </ul>
+              )}
             </div>
             <div className="bg-neutral-100 p-4 rounded-md">
               <h3 className="font-medium text-primary mb-2">Example:</h3>
-              <p className="text-neutral-400">From the burndown chart, you can see how your progress compares to the ideal path. This helps teams identify if they're on track to complete work within the planned time frame.</p>
+              <p className="text-neutral-400">
+                {activeTab === "burndown"
+                  ? "From the burndown chart, you can see how your progress compares to the ideal path. This helps teams identify if they're on track to complete work within the planned time frame."
+                  : "The burnup chart makes it easier to see how much work is completed (green) vs remaining (red) and accommodates scope changes (blue) which are common in real projects."}
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Burndown Chart Panel */}
+        {/* Chart Panel */}
         <div className="bg-white rounded-lg shadow-md p-6 lg:col-span-2 order-1 lg:order-2">
-          <h2 className="text-xl font-bold text-primary mb-4 flex items-center">
-            <span className="bg-primary text-white rounded-full w-8 h-8 inline-flex items-center justify-center mr-2">2</span>
-            Interactive Burndown Chart
+          <h2 className="text-xl font-bold text-primary mb-4 flex items-center justify-between">
+            <div className="flex items-center">
+              <span className="bg-primary text-white rounded-full w-8 h-8 inline-flex items-center justify-center mr-2">2</span>
+              Interactive Charts
+            </div>
+            <Tabs defaultValue="burndown" className="w-auto" onValueChange={setActiveTab}>
+              <TabsList>
+                <TabsTrigger value="burndown">Burndown</TabsTrigger>
+                <TabsTrigger value="burnup">Burnup</TabsTrigger>
+              </TabsList>
+            </Tabs>
           </h2>
           
           {/* Chart container */}
           <div className="h-64 md:h-80 mb-6">
-            <BurndownChart 
-              idealData={idealBurndown} 
-              actualData={actualBurndown}
-            />
+            {activeTab === "burndown" ? (
+              <BurndownChart 
+                idealData={idealBurndown} 
+                actualData={actualBurndown}
+              />
+            ) : (
+              <BurnupChart
+                scopeData={scopeData}
+                todoData={todoData}
+                doneData={doneData}
+              />
+            )}
           </div>
           
           {/* Progress indicators */}
@@ -226,11 +275,11 @@ const Home: React.FC = () => {
                 </ul>
               </div>
               <div className="bg-neutral-100 p-4 rounded-md">
-                <p className="mb-2">Benefits of burndown charts:</p>
+                <p className="mb-2">Comparing chart types:</p>
                 <ul className="list-disc pl-5 space-y-1 text-neutral-400">
-                  <li>Visual progress tracking</li>
-                  <li>Early warning of schedule issues</li>
-                  <li>Helps with future estimation</li>
+                  <li><strong>Burndown</strong>: Simple to read, focuses on work remaining</li>
+                  <li><strong>Burnup</strong>: Shows scope changes, visualizes both work done and remaining</li>
+                  <li>Both provide visual progress tracking and early warning of issues</li>
                 </ul>
               </div>
             </div>
@@ -239,7 +288,7 @@ const Home: React.FC = () => {
       </div>
       
       <footer className="mt-8 text-center text-neutral-300 text-sm">
-        <p>Interactive Burndown Chart Simulator | Created for educational purposes</p>
+        <p>Interactive Chart Simulator | Comparing Burndown and Burnup Charts | Created for educational purposes</p>
       </footer>
     </div>
   );

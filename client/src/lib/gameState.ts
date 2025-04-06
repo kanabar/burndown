@@ -8,6 +8,10 @@ interface GameState {
   throwResults: (number | null)[];
   idealBurndown: number[];
   actualBurndown: number[];
+  // Burnup chart data
+  scopeData: number[];
+  todoData: number[];
+  doneData: number[];
   isRolling: boolean;
   isGameCompleted: boolean;
   diceTheme: DiceTheme;
@@ -26,6 +30,10 @@ export const useGameState = create<GameState>((set, get) => ({
   throwResults: [null, null, null, null],
   idealBurndown: [12, 9, 6, 3, 0],
   actualBurndown: [12],
+  // Initialize burnup chart data
+  scopeData: [12, 12, 12, 12],         // Total scope remains constant at 12 points
+  todoData: [12, 12, 12, 12],          // TODO starts at 12 and will decrease
+  doneData: [0, 0, 0, 0],              // DONE starts at 0 and will increase
   isRolling: false,
   isGameCompleted: false,
   diceTheme: 'classic', // Default theme
@@ -48,7 +56,7 @@ export const useGameState = create<GameState>((set, get) => ({
   },
   
   updateState: (diceValue: number) => {
-    const { throwNumber, remainingWork, throwResults, actualBurndown } = get();
+    const { throwNumber, remainingWork, throwResults, actualBurndown, todoData, doneData } = get();
     
     // Update throw results
     const newThrowResults = [...throwResults];
@@ -60,6 +68,14 @@ export const useGameState = create<GameState>((set, get) => ({
     // Update actual burndown data
     const newActualBurndown = [...actualBurndown, newRemainingWork];
     
+    // Update burnup chart data
+    const newTodoData = [...todoData];
+    const newDoneData = [...doneData];
+    
+    // Update TODO and DONE for the current sprint
+    newTodoData[throwNumber - 1] = newRemainingWork;
+    newDoneData[throwNumber - 1] = 12 - newRemainingWork; // DONE = total scope - remaining work
+    
     // Check if game is completed (all 4 throws or 0 remaining work)
     const isGameCompleted = throwNumber >= 4 || newRemainingWork === 0;
     
@@ -67,6 +83,8 @@ export const useGameState = create<GameState>((set, get) => ({
       throwResults: newThrowResults,
       remainingWork: newRemainingWork,
       actualBurndown: newActualBurndown,
+      todoData: newTodoData,
+      doneData: newDoneData,
       throwNumber: throwNumber + 1,
       isGameCompleted
     });
@@ -80,6 +98,10 @@ export const useGameState = create<GameState>((set, get) => ({
       throwResults: [null, null, null, null],
       idealBurndown: [12, 9, 6, 3, 0],
       actualBurndown: [12],
+      // Reset burnup chart data
+      scopeData: [12, 12, 12, 12],
+      todoData: [12, 12, 12, 12],
+      doneData: [0, 0, 0, 0],
       isRolling: false,
       isGameCompleted: false,
       diceTheme // Maintain the current theme
