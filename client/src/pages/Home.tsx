@@ -116,7 +116,7 @@ const Home: React.FC = () => {
                 <ul className="list-disc pl-5 space-y-2 text-neutral-400">
                   <li><span className="font-medium text-blue-500">Blue line</span>: Total scope (constant at 12)</li>
                   <li><span className="font-medium text-red-500 line-through">Red dotted line</span>: Ideal progress (goes up from 0 to 12)</li>
-                  <li><span className="font-medium text-green-500">Green line</span>: DONE work (increases over time)</li>
+                  <li><span className="font-medium text-red-500">Red solid line</span>: DONE work (increases over time)</li>
                   <li>Y-axis: Completed story points (0 to 12)</li>
                   <li>X-axis: Four sprints (dice throws)</li>
                 </ul>
@@ -132,9 +132,9 @@ const Home: React.FC = () => {
                 </ul>
               ) : (
                 <ul className="list-disc pl-5 space-y-2 text-neutral-400">
-                  <li>Green line above red dotted line → Ahead of schedule</li>
-                  <li>Green line below red dotted line → Behind schedule</li>
-                  <li>Green line reaching blue line → All work completed</li>
+                  <li>Red solid line above red dotted line → Ahead of schedule</li>
+                  <li>Red solid line below red dotted line → Behind schedule</li>
+                  <li>Red solid line reaching blue line → All work completed</li>
                 </ul>
               )}
             </div>
@@ -143,7 +143,7 @@ const Home: React.FC = () => {
               <p className="text-neutral-400">
                 {activeTab === "burndown"
                   ? "From the burndown chart, you can see how your progress compares to the ideal path. This helps teams identify if they're on track to complete work within the planned time frame."
-                  : "The burnup chart makes it easier to see how much work is completed (green) versus the total scope (blue). The gap between lines represents remaining work and it can also visualize scope changes."}
+                  : "The burnup chart makes it easier to see how much work is completed (red solid) versus the total scope (blue). The gap between lines represents remaining work and it can also visualize scope changes."}
               </p>
             </div>
           </div>
