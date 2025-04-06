@@ -1,6 +1,7 @@
 import React from 'react';
 import BurndownChart from '@/components/BurndownChart';
 import DiceRoller from '@/components/DiceRoller';
+import Dice from '@/components/Dice';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useGameState } from '@/lib/gameState';
@@ -13,6 +14,7 @@ const Home: React.FC = () => {
     idealBurndown,
     actualBurndown,
     isGameCompleted,
+    diceTheme,
     restartGame
   } = useGameState();
   
@@ -152,12 +154,24 @@ const Home: React.FC = () => {
                 {remainingWork === 0 && throwNumber <= 4 && " (Early Completion!)"}
               </h3>
               <div className="grid grid-cols-4 gap-2 mb-3">
-                {throwResults.map((result, index) => (
-                  <div key={index} className={`p-3 bg-white rounded-md text-center shadow-sm ${result === null ? 'opacity-50' : ''}`}>
-                    <p className="text-xs text-neutral-300">Throw {index + 1}</p>
-                    <p className="text-xl font-bold text-primary">{result !== null ? result : '-'}</p>
-                  </div>
-                ))}
+                {throwResults.map((result, index) => {
+                  return (
+                    <div key={index} className={`p-3 bg-white rounded-md text-center shadow-sm ${result === null ? 'opacity-50' : ''}`}>
+                      <p className="text-xs text-neutral-300">Throw {index + 1}</p>
+                      <div className="flex justify-center">
+                        {result !== null ? (
+                          <Dice 
+                            value={result} 
+                            theme={diceTheme}
+                            isRolling={false}
+                          />
+                        ) : (
+                          <p className="text-xl font-bold text-primary">-</p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
               {remainingWork === 0 && (
                 <div className="text-center p-3 mb-3 rounded-md font-medium bg-green-100 text-green-700">

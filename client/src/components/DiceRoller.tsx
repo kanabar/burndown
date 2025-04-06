@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useGameState } from '@/lib/gameState';
+import Dice from '@/components/Dice';
+import DiceThemeSelector from '@/components/DiceThemeSelector';
 
 const DiceRoller: React.FC = () => {
   const { 
@@ -9,14 +11,13 @@ const DiceRoller: React.FC = () => {
     remainingWork,
     isRolling, 
     isGameCompleted,
-    rollDice 
+    diceTheme,
+    rollDice,
+    setDiceTheme
   } = useGameState();
   
   // Get the current dice value
   const currentDiceValue = throwResults[throwNumber - 2]; // -2 because throwNumber is 1-indexed and we want the previous result
-  
-  // Apply dice rolling animation class
-  const diceClass = `dice w-16 h-16 bg-white rounded-lg shadow-lg border-2 border-neutral-200 flex items-center justify-center ${isRolling ? 'dice-rolling' : ''}`;
   
   // CSS for dice animation
   useEffect(() => {
@@ -61,7 +62,7 @@ const DiceRoller: React.FC = () => {
   
   return (
     <div className="bg-neutral-100 p-4 rounded-md mb-6">
-      <div className="flex flex-col md:flex-row items-center justify-between">
+      <div className="flex flex-col md:flex-row items-center justify-between mb-4">
         <div className="mb-4 md:mb-0">
           <h3 className="text-lg font-medium text-neutral-400 mb-2">
             Throw #{throwNumber > 4 ? 4 : throwNumber} of 4
@@ -75,11 +76,11 @@ const DiceRoller: React.FC = () => {
         <div className="flex items-center space-x-6">
           {/* Dice visualization */}
           <div className="relative">
-            <div className={diceClass}>
-              <span className="text-2xl font-bold text-primary">
-                {isRolling ? '?' : (currentDiceValue !== null ? currentDiceValue : '?')}
-              </span>
-            </div>
+            <Dice 
+              value={currentDiceValue} 
+              theme={diceTheme}
+              isRolling={isRolling}
+            />
           </div>
           
           {/* Throw button */}
@@ -94,6 +95,12 @@ const DiceRoller: React.FC = () => {
           )}
         </div>
       </div>
+      
+      {/* Dice theme selector */}
+      <DiceThemeSelector 
+        currentTheme={diceTheme} 
+        onChange={setDiceTheme}
+      />
     </div>
   );
 };

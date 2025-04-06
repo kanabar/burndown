@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 
+import { type DiceTheme } from '@/components/DiceThemeSelector';
+
 interface GameState {
   throwNumber: number;
   remainingWork: number;
@@ -8,12 +10,14 @@ interface GameState {
   actualBurndown: number[];
   isRolling: boolean;
   isGameCompleted: boolean;
+  diceTheme: DiceTheme;
   
   // Actions
   rollDice: () => void;
   updateState: (diceValue: number) => void;
   restartGame: () => void;
   setIsRolling: (isRolling: boolean) => void;
+  setDiceTheme: (theme: DiceTheme) => void;
 }
 
 export const useGameState = create<GameState>((set, get) => ({
@@ -24,6 +28,7 @@ export const useGameState = create<GameState>((set, get) => ({
   actualBurndown: [12],
   isRolling: false,
   isGameCompleted: false,
+  diceTheme: 'classic', // Default theme
   
   rollDice: () => {
     const { isRolling, throwNumber, isGameCompleted } = get();
@@ -68,6 +73,7 @@ export const useGameState = create<GameState>((set, get) => ({
   },
   
   restartGame: () => {
+    const { diceTheme } = get();
     set({
       throwNumber: 1,
       remainingWork: 12,
@@ -75,11 +81,16 @@ export const useGameState = create<GameState>((set, get) => ({
       idealBurndown: [12, 9, 6, 3, 0],
       actualBurndown: [12],
       isRolling: false,
-      isGameCompleted: false
+      isGameCompleted: false,
+      diceTheme // Maintain the current theme
     });
   },
   
   setIsRolling: (isRolling: boolean) => {
     set({ isRolling });
+  },
+  
+  setDiceTheme: (theme: DiceTheme) => {
+    set({ diceTheme: theme });
   }
 }));
