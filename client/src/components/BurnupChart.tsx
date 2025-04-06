@@ -21,9 +21,10 @@ const BurnupChart: React.FC<BurnupChartProps> = ({ scopeData, todoData, doneData
   
   // Add sprint data points with increasing values
   for (let i = 0; i < 4; i++) {
-    // For each sprint, TODO and DONE should both increase over time
-    // For proper burnup visualization, TODO represents the ideal path (linear progress)
-    // While DONE represents actual completed work
+    // For burnup chart visualization:
+    // - scope remains constant at 12
+    // - todo represents the ideal progress path (linear growth)
+    // - done represents the actual completed work
     const sprintIndex = i;
     
     chartData.push({
@@ -71,8 +72,8 @@ const BurnupChart: React.FC<BurnupChartProps> = ({ scopeData, todoData, doneData
           dataKey="scope"
           stroke="#3b82f6" // Blue color (matching the blue in the image)
           strokeWidth={2}
-          activeDot={{ r: 8 }}
-          dot={{ strokeWidth: 2 }}
+          activeDot={false}
+          dot={false}
         />
         <Line
           name="TODO"
@@ -80,9 +81,9 @@ const BurnupChart: React.FC<BurnupChartProps> = ({ scopeData, todoData, doneData
           dataKey="todo"
           stroke="#ef4444" // Red color (matching the red in the image)
           strokeWidth={2}
-          strokeDasharray="5 5" // Dashed line for ideal progress
-          activeDot={{ r: 8 }}
-          dot={{ strokeWidth: 2 }}
+          strokeDasharray="6 3" // More pronounced dashed line for ideal progress
+          activeDot={false}
+          dot={false}
         />
         <Line
           name="DONE"

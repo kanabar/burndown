@@ -73,7 +73,14 @@ export const useGameState = create<GameState>((set, get) => ({
     const newDoneData = [...doneData];
     
     // Update DONE for the current sprint (increasing from 0 toward 12)
-    newDoneData[throwNumber - 1] = 12 - newRemainingWork; // DONE = total scope - remaining work
+    // For burnup chart, DONE should always increase or stay the same, never decrease
+    const workDone = 12 - newRemainingWork;
+    newDoneData[throwNumber - 1] = workDone;
+    
+    // Ensure subsequent points maintain the highest DONE value (never go down)
+    for (let i = throwNumber; i < newDoneData.length; i++) {
+      newDoneData[i] = workDone;
+    }
     
     // For burnup chart, TODO is the difference between scope and done
     // We're keeping it at 0 and letting the chart visually show the difference

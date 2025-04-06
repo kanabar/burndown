@@ -53,8 +53,8 @@ const BurndownChart: React.FC<BurndownChartProps> = ({ idealData, actualData }) 
           dataKey="ideal"
           stroke="#3b82f6"
           strokeWidth={2}
-          activeDot={{ r: 8 }}
-          dot={{ strokeWidth: 2 }}
+          activeDot={false}
+          dot={false}
         />
         <Line
           name="Actual Progress"
