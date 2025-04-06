@@ -1,5 +1,6 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useGameState } from '@/lib/gameState';
 
 interface BurnupChartProps {
   scopeData: number[];
@@ -8,6 +9,9 @@ interface BurnupChartProps {
 }
 
 const BurnupChart: React.FC<BurnupChartProps> = ({ scopeData, todoData, doneData }) => {
+  // Get the current throw number to determine how far to show the DONE line
+  const throwNumber = useGameState(state => state.throwNumber);
+  
   // Transform data for Recharts - burnup chart shows work growing upward from 0 to completion
   const chartData = [];
   
@@ -27,11 +31,16 @@ const BurnupChart: React.FC<BurnupChartProps> = ({ scopeData, todoData, doneData
     // - done represents the actual completed work
     const sprintIndex = i;
     
+    // Only include done data up to the current throw number (sprint)
+    const doneValue = i < throwNumber - 1 
+      ? (doneData[sprintIndex] !== undefined ? doneData[sprintIndex] : null)
+      : null;
+    
     chartData.push({
       name: `Sprint ${sprintIndex + 1}`,
       scope: 12, // Total scope remains constant at 12
       todo: 3 * (sprintIndex + 1), // Ideal progress: 3, 6, 9, 12
-      done: doneData[sprintIndex] !== undefined ? doneData[sprintIndex] : null
+      done: doneValue
     });
   }
 
