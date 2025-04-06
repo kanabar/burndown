@@ -115,9 +115,9 @@ const Home: React.FC = () => {
               ) : (
                 <ul className="list-disc pl-5 space-y-2 text-neutral-400">
                   <li><span className="font-medium text-blue-500">Blue line</span>: Total scope (constant at 12)</li>
+                  <li><span className="font-medium text-red-500 line-through">Red dotted line</span>: Ideal progress (goes up from 0 to 12)</li>
                   <li><span className="font-medium text-green-500">Green line</span>: DONE work (increases over time)</li>
-                  <li>Gap between blue and green: Remaining work</li>
-                  <li>Y-axis: Story points (0 to 12)</li>
+                  <li>Y-axis: Completed story points (0 to 12)</li>
                   <li>X-axis: Four sprints (dice throws)</li>
                 </ul>
               )}
@@ -132,9 +132,9 @@ const Home: React.FC = () => {
                 </ul>
               ) : (
                 <ul className="list-disc pl-5 space-y-2 text-neutral-400">
-                  <li>Increasing green line → Work being completed</li>
-                  <li>Gap between blue and green → Remaining work</li>
-                  <li>Green meeting blue → All work completed</li>
+                  <li>Green line above red dotted line → Ahead of schedule</li>
+                  <li>Green line below red dotted line → Behind schedule</li>
+                  <li>Green line reaching blue line → All work completed</li>
                 </ul>
               )}
             </div>

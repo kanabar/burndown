@@ -8,24 +8,31 @@ interface BurnupChartProps {
 }
 
 const BurnupChart: React.FC<BurnupChartProps> = ({ scopeData, todoData, doneData }) => {
-  // Transform data for Recharts
-  // For burnup chart, we'll create data points that show progress upward towards completion
-  const chartData = scopeData.map((scope, index) => {
-    return {
-      name: `Sprint ${index + 1}`,
-      scope,
-      todo: 0, // We'll visualize TODO as the gap between scope and done
-      done: doneData[index] !== undefined ? doneData[index] : null
-    };
-  });
+  // Transform data for Recharts - burnup chart shows work growing upward from 0 to completion
+  const chartData = [];
   
   // Add a "Start" point at the beginning
-  chartData.unshift({
+  chartData.push({
     name: 'Start',
     scope: 12,
     todo: 0,
     done: 0
   });
+  
+  // Add sprint data points with increasing values
+  for (let i = 0; i < 4; i++) {
+    // For each sprint, TODO and DONE should both increase over time
+    // For proper burnup visualization, TODO represents the ideal path (linear progress)
+    // While DONE represents actual completed work
+    const sprintIndex = i;
+    
+    chartData.push({
+      name: `Sprint ${sprintIndex + 1}`,
+      scope: 12, // Total scope remains constant at 12
+      todo: 3 * (sprintIndex + 1), // Ideal progress: 3, 6, 9, 12
+      done: doneData[sprintIndex] !== undefined ? doneData[sprintIndex] : null
+    });
+  }
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -64,6 +71,16 @@ const BurnupChart: React.FC<BurnupChartProps> = ({ scopeData, todoData, doneData
           dataKey="scope"
           stroke="#3b82f6" // Blue color (matching the blue in the image)
           strokeWidth={2}
+          activeDot={{ r: 8 }}
+          dot={{ strokeWidth: 2 }}
+        />
+        <Line
+          name="TODO"
+          type="monotone"
+          dataKey="todo"
+          stroke="#ef4444" // Red color (matching the red in the image)
+          strokeWidth={2}
+          strokeDasharray="5 5" // Dashed line for ideal progress
           activeDot={{ r: 8 }}
           dot={{ strokeWidth: 2 }}
         />
