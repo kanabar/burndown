@@ -55,17 +55,17 @@ const Home: React.FC = () => {
       };
     } else if (finalRemaining <= 3) {
       return {
-        message: 'Good job! You\'re close to completion.',
+        message: 'You did not complete the backlog as planned in 4 sprints.',
         bgColor: 'bg-blue-100 text-blue-700'
       };
     } else if (finalRemaining <= 6) {
       return {
-        message: 'Making progress, but still work to do.',
+        message: 'You did not complete the backlog as planned in 4 sprints.',
         bgColor: 'bg-yellow-100 text-yellow-700'
       };
     } else {
       return {
-        message: 'Significant work remains. You\'re behind schedule.',
+        message: 'You did not complete the backlog as planned in 4 sprints.',
         bgColor: 'bg-red-100 text-red-700'
       };
     }
