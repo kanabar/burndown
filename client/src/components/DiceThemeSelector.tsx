@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useGameState } from '@/lib/gameState';
 
 // Define the available dice themes
-export type DiceTheme = 'classic' | 'dots' | 'tech' | 'pixel';
+export type DiceTheme = 'classic' | 'dots';
 
 interface DiceThemeSelectorProps {
   onChange: (theme: DiceTheme) => void;
@@ -20,24 +20,14 @@ const DiceThemeSelector: React.FC<DiceThemeSelectorProps> = ({ onChange, current
     },
     { 
       id: 'dots', 
-      name: 'Dots', 
+      name: 'Dice Dots', 
       preview: '⚀⚁⚂' 
-    },
-    { 
-      id: 'tech', 
-      name: 'Tech', 
-      preview: '0x1' 
-    },
-    { 
-      id: 'pixel', 
-      name: 'Pixel', 
-      preview: '█▋▍' 
-    },
+    }
   ];
 
   return (
     <div className="mb-4">
-      <h3 className="text-sm font-medium text-neutral-400 mb-2">Dice Theme:</h3>
+      <h3 className="text-sm font-medium text-neutral-400 mb-2">Dice Style:</h3>
       <div className="flex flex-wrap gap-2">
         {themes.map((theme) => (
           <Button

@@ -27,22 +27,6 @@ const Dice: React.FC<DiceProps> = ({ value, theme, isRolling }) => {
         const diceSymbols = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
         return diceSymbols[value - 1];
       
-      case 'tech':
-        // Hexadecimal style
-        return `0x${value}`;
-      
-      case 'pixel':
-        // Pixel art style representation
-        const pixelRepresentations = [
-          '▏', // 1 - small bar
-          '▎', // 2 - slightly larger bar
-          '▍', // 3 - medium bar
-          '▌', // 4 - large bar
-          '▋', // 5 - very large bar
-          '█'  // 6 - full block
-        ];
-        return pixelRepresentations[value - 1];
-      
       default:
         return value;
     }
