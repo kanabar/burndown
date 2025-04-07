@@ -63,8 +63,10 @@ const DiceRoller: React.FC = () => {
       } else if (throwNumber > 4) {
         return "All throws completed";
       }
+    } else if (throwNumber === 1) {
+      return "Ready to start - Click the button to roll the dice";
     }
-    return "Click the button to roll the dice";
+    return "Click the button to continue rolling";
   };
   
   return (
@@ -72,7 +74,7 @@ const DiceRoller: React.FC = () => {
       <div className="flex flex-col md:flex-row items-center justify-between mb-4">
         <div className="mb-4 md:mb-0">
           <h3 className="text-lg font-medium text-neutral-400 mb-2">
-            Throw #{throwNumber > 4 ? 4 : throwNumber} of 4
+            Throw {throwNumber > 1 ? '#' + (throwNumber - 1) : '#0'} of 4
             {remainingWork === 0 && throwNumber <= 4 && " (Early completion!)"}
           </h3>
           <p className="text-neutral-300">
