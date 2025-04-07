@@ -12,8 +12,13 @@ const DiceRoller: React.FC = () => {
     isRolling, 
     isGameCompleted,
     diceTheme,
+    isReplayMode,
+    currentReplayStep,
+    savedResults,
     rollDice,
-    setDiceTheme
+    setDiceTheme,
+    nextReplayStep,
+    exitReplay
   } = useGameState();
   
   // Get the current dice value
@@ -50,7 +55,9 @@ const DiceRoller: React.FC = () => {
   
   // Generate status message based on game state
   const getStatusMessage = () => {
-    if (isGameCompleted) {
+    if (isReplayMode) {
+      return `Replay mode - Step ${currentReplayStep} of ${savedResults.length}`;
+    } else if (isGameCompleted) {
       if (remainingWork === 0) {
         return "All work completed!";
       } else if (throwNumber > 4) {
@@ -83,15 +90,36 @@ const DiceRoller: React.FC = () => {
             />
           </div>
           
-          {/* Throw button */}
-          {!isGameCompleted && (
-            <Button 
-              onClick={rollDice}
-              className={`bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-md shadow-md transition duration-200 ${!isRolling && !isGameCompleted ? 'pulse-animation' : ''} focus:outline-none focus:ring-2 focus:ring-primary/50`}
-              disabled={isRolling || isGameCompleted}
-            >
-              THROW DICE
-            </Button>
+          {/* Replay controls or normal throw button */}
+          {isReplayMode ? (
+            <div className="flex items-center space-x-2">
+              <Button 
+                onClick={nextReplayStep}
+                className="bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-md shadow transition duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 flex items-center"
+                disabled={currentReplayStep >= savedResults.length}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                </svg>
+                Next
+              </Button>
+              <Button 
+                onClick={exitReplay}
+                className="bg-neutral-200 hover:bg-neutral-300 text-neutral-700 font-medium py-2 px-4 rounded-md shadow transition duration-200 focus:outline-none focus:ring-2 focus:ring-neutral-400"
+              >
+                Exit Replay
+              </Button>
+            </div>
+          ) : (
+            !isGameCompleted && (
+              <Button 
+                onClick={rollDice}
+                className={`bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-md shadow-md transition duration-200 ${!isRolling && !isGameCompleted ? 'pulse-animation' : ''} focus:outline-none focus:ring-2 focus:ring-primary/50`}
+                disabled={isRolling || isGameCompleted}
+              >
+                THROW DICE
+              </Button>
+            )
           )}
         </div>
       </div>

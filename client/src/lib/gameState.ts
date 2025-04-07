@@ -15,6 +15,9 @@ interface GameState {
   isRolling: boolean;
   isGameCompleted: boolean;
   diceTheme: DiceTheme;
+  isReplayMode: boolean;
+  savedResults: number[];
+  currentReplayStep: number;
   
   // Actions
   rollDice: () => void;
@@ -22,6 +25,9 @@ interface GameState {
   restartGame: () => void;
   setIsRolling: (isRolling: boolean) => void;
   setDiceTheme: (theme: DiceTheme) => void;
+  startReplay: () => void;
+  nextReplayStep: () => void;
+  exitReplay: () => void;
 }
 
 export const useGameState = create<GameState>((set, get) => ({
@@ -37,6 +43,9 @@ export const useGameState = create<GameState>((set, get) => ({
   isRolling: false,
   isGameCompleted: false,
   diceTheme: 'classic', // Default theme
+  isReplayMode: false,
+  savedResults: [],
+  currentReplayStep: 0,
   
   rollDice: () => {
     const { isRolling, throwNumber, isGameCompleted } = get();
@@ -111,6 +120,10 @@ export const useGameState = create<GameState>((set, get) => ({
       doneData: [0, 0, 0, 0],
       isRolling: false,
       isGameCompleted: false,
+      // Reset replay state
+      isReplayMode: false,
+      savedResults: [],
+      currentReplayStep: 0,
       diceTheme // Maintain the current theme
     });
   },
@@ -121,5 +134,68 @@ export const useGameState = create<GameState>((set, get) => ({
   
   setDiceTheme: (theme: DiceTheme) => {
     set({ diceTheme: theme });
+  },
+  
+  // Replay functionality
+  startReplay: () => {
+    const { throwResults } = get();
+    
+    // Filter out null values and save valid dice results
+    const validResults = throwResults.filter(result => result !== null) as number[];
+    
+    // Only start replay if we have results to replay
+    if (validResults.length === 0) return;
+    
+    // Reset the game state but keep the results for replay
+    set({
+      throwNumber: 1,
+      remainingWork: 12,
+      throwResults: [null, null, null, null],
+      idealBurndown: [12, 9, 6, 3, 0],
+      actualBurndown: [12],
+      // Reset burnup chart data
+      scopeData: [12, 12, 12, 12],
+      todoData: [0, 0, 0, 0],
+      doneData: [0, 0, 0, 0],
+      isRolling: false,
+      isGameCompleted: false,
+      // Set replay mode
+      isReplayMode: true,
+      savedResults: validResults,
+      currentReplayStep: 0
+    });
+  },
+  
+  nextReplayStep: () => {
+    const { currentReplayStep, savedResults, isReplayMode } = get();
+    
+    // Only proceed if in replay mode and there are steps left
+    if (!isReplayMode || currentReplayStep >= savedResults.length) return;
+    
+    // Get the next dice value from saved results
+    const nextDiceValue = savedResults[currentReplayStep];
+    
+    // Apply the dice roll result
+    get().updateState(nextDiceValue);
+    
+    // Increment the replay step
+    set({ currentReplayStep: currentReplayStep + 1 });
+    
+    // If this was the last step, exit replay mode when done
+    if (currentReplayStep + 1 >= savedResults.length) {
+      // Small delay to allow the last state update to be visible
+      setTimeout(() => {
+        set({ isReplayMode: false });
+      }, 500);
+    }
+  },
+  
+  exitReplay: () => {
+    // Exit replay mode but keep the current game state
+    set({ 
+      isReplayMode: false,
+      savedResults: [],
+      currentReplayStep: 0
+    });
   }
 }));
